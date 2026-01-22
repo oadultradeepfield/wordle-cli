@@ -4,7 +4,6 @@ package com.oadultradeepfield.wordlecli.model
  * GameState represents the current state of the game.
  */
 sealed class GameState {
-    data object NotStarted : GameState()
     data object Playing : GameState()
 
     /**

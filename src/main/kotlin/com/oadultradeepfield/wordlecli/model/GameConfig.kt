@@ -27,6 +27,5 @@ data class GameConfig(val wordLength: Int, val maxAttempts: Int, val wordFilePat
         const val DEFAULT_WORD_FILE_PATH = "words.txt"
 
         fun builder() = Builder()
-        fun withDefaults() = Builder()
     }
 }

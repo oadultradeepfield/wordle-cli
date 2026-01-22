@@ -17,15 +17,4 @@ object ConsoleFormatter {
         return (listOf(topBorder, titleLine, separator) + contentLines + listOf(bottomBorder))
             .joinToString("\n")
     }
-
-    /**
-     * Creates a horizontal rule with the specified length and character.
-     *
-     * @param length The length of the horizontal rule. Default is 40.
-     * @param char The character to use for the horizontal rule. Default is '─'.
-     * @return The formatted horizontal rule as a string.
-     */
-    fun createHorizontalRule(length: Int = 40, char: Char = '─'): String {
-        return char.toString().repeat(length)
-    }
 }

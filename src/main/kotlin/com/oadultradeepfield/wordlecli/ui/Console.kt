@@ -9,7 +9,6 @@ import com.oadultradeepfield.wordlecli.model.*
  * @param config The configuration settings for the game.
  */
 class Console(private val config: GameConfig) {
-    private val formatter = ConsoleFormatter
     private val layout = ConsoleLayout()
 
     private val helpText: String by lazy {
@@ -98,7 +97,6 @@ U  \ V  V /  U\_)-\___/   |_| \_\  |____/ u |_____| |_____|
 
             /* shouldn't happen */
             is GameState.Playing -> ""
-            is GameState.NotStarted -> ""
         }
 
         val gameEndLayout = layout.apply {
@@ -123,15 +121,5 @@ U  \ V  V /  U\_)-\___/   |_| \_\  |____/ u |_____| |_____|
         }.render()
 
         println(errorBox)
-    }
-
-    fun showMessage(message: String) {
-        val messageBox = layout.apply {
-            box("INFO") {
-                line(message)
-            }
-        }.render()
-
-        println(messageBox)
     }
 }

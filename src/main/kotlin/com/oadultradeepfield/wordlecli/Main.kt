@@ -8,7 +8,12 @@ import com.oadultradeepfield.wordlecli.model.Result
 import com.oadultradeepfield.wordlecli.ui.Console
 
 fun main() {
-    val config = GameConfig.withDefaults().build()
+    val config = GameConfig.builder()
+        .wordLength(5)
+        .maxAttempts(6)
+        .wordFile("words.txt")
+        .build()
+
     val game = WordleGame(config)
     val ui = Console(config)
 
@@ -20,49 +25,34 @@ fun main() {
     gameLoop@ while (true) {
         ui.showGuessHistory(game.history)
 
-        game.onState<GameState.Won> { wonState ->
+        if (game.currentState is GameState.Won) {
+            val wonState = game.currentState as GameState.Won
             ui.showGameEnd(wonState, game.history)
         }
 
-        game.onState<GameState.Lost> { lostState ->
+        if (game.currentState is GameState.Lost) {
+            val lostState = game.currentState as GameState.Lost
             ui.showGameEnd(lostState, game.history)
-        }
-
-        if (game.currentState != GameState.Playing) {
-            print("\nPlay again? (yes/no): ")
-            val input = readlnOrNull()?.lowercase() ?: "no"
-            if (input in listOf("yes", "y")) {
-                game.startGame()
-                continue@gameLoop
-            } else {
-                break@gameLoop
-            }
         }
 
         ui.showPrompt(game.remainingGuesses)
 
         val input = readlnOrNull() ?: continue
 
-        ui.parseInput(input).let { action ->
-            when (action) {
-                is GameAction.Quit -> {
-                    println("\n👋 Thanks for playing!")
-                    return
-                }
+        when (val action = ui.parseInput(input)) {
+            is GameAction.Quit -> {
+                println("\n👋 Thanks for playing!")
+                return
+            }
 
-                is GameAction.Help -> ui.showHelp()
-                is GameAction.NewGame -> game.startGame()
-                is GameAction.Guess -> {
-                    game.makeGuess(action.word).run {
-                        when (this) {
-                            is Result.Ok -> ui.showGuess(value)
-                            is Result.Err -> ui.showError(message)
-                        }
-                    }
+            is GameAction.Help -> ui.showHelp()
+            is GameAction.NewGame -> game.startGame()
+            is GameAction.Guess -> {
+                when (val result = game.makeGuess(action.word)) {
+                    is Result.Ok -> ui.showGuess(result.value)
+                    is Result.Err -> ui.showError(result.message)
                 }
             }
         }
     }
-
-    println("\n👋 Thanks for playing WordleCLI!")
 }

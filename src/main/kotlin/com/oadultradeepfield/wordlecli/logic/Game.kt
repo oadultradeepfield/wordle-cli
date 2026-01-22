@@ -4,15 +4,6 @@ import com.oadultradeepfield.wordlecli.model.*
 import kotlin.properties.Delegates
 
 /**
- * GameObserver is an interface that defines the methods to be implemented by observers of the game.
- * Observers can register themselves to receive updates about the game state and the guess results.
- */
-interface GameObserver {
-    fun onStateChanged(newState: GameState)
-    fun onGuessResult(result: GuessResult)
-}
-
-/**
  * WordleGame is a class that implements the game logic for the Wordle game.
  * It keeps track of the game state, secret word, and observers.
  *
@@ -20,20 +11,13 @@ interface GameObserver {
  */
 class WordleGame(private val config: GameConfig) {
     private lateinit var secretWord: String
-    private val observers = mutableListOf<GameObserver>()
-    private var state: GameState by Delegates.observable(GameState.NotStarted) { _, _, newState ->
-        observers.forEach { it.onStateChanged(newState) }
-    }
+    private var state: GameState by Delegates.notNull()
     private val guesses = mutableListOf<GuessResult>()
 
     val currentState: GameState get() = state
     val attempts: Int get() = guesses.size
     val remainingGuesses: Int get() = config.maxAttempts - attempts
     val history: List<GuessResult> get() = guesses.toList()
-
-    fun addObserver(observer: GameObserver) {
-        observers.add(observer)
-    }
 
     fun startGame() {
         secretWord = WordBank.randomWord()
@@ -53,7 +37,6 @@ class WordleGame(private val config: GameConfig) {
         return Result.Ok(evaluateGuess(guess)).also { result ->
             guesses.add(result.value)
             updateGameState(result.value)
-            observers.forEach { it.onGuessResult(result.value) }
         }
     }
 
