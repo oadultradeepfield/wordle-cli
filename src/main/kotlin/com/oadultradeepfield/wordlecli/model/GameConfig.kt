@@ -1,4 +1,4 @@
-package model
+package com.oadultradeepfield.wordlecli.model
 
 /**
  * GameConfig represents the configuration settings for a game, including the word length, maximum attempts,

@@ -1,4 +1,4 @@
-package model
+package com.oadultradeepfield.wordlecli.model
 
 /**
  * Result is a sealed class that represents either success (Ok) or failure (Err) with associated data.

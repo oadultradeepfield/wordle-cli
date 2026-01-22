@@ -1,4 +1,4 @@
-package model
+package com.oadultradeepfield.wordlecli.model
 
 /**
  * LetterResult represents the result of a single letter in a word guess.
