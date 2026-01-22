@@ -96,8 +96,15 @@ class WordleGame(private val config: GameConfig) {
     private fun updateGameState(result: GuessResult) {
         state = when {
             result.isWin -> GameState.Won(attempts)
-            attempts >= config.maxAttempts -> GameState.Loss(secretWord)
+            attempts >= config.maxAttempts -> GameState.Lost(secretWord)
             else -> GameState.Playing
         }
+    }
+
+    /**
+     * INLINE + REIFIED: Generic handler for game results
+     */
+    inline fun <reified T : GameState> onState(action: (T) -> Unit) {
+        (currentState as? T)?.let(action)
     }
 }

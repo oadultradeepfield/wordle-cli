@@ -92,7 +92,7 @@ U  \ V  V /  U\_)-\___/   |_| \_\  |____/ u |_____| |_____|
                 "🎉 BRILLIANT! You got it in ${state.attempts} ${if (state.attempts == 1) "try" else "tries"}!"
             }
 
-            is GameState.Loss -> {
+            is GameState.Lost -> {
                 "😔 Game Over! The word was: ${state.secretWord.uppercase()}"
             }
 

@@ -19,5 +19,5 @@ sealed class GameState {
      *
      * @param secretWord The secret word that the player was trying to guess.
      */
-    data class Loss(val secretWord: String) : GameState()
+    data class Lost(val secretWord: String) : GameState()
 }
