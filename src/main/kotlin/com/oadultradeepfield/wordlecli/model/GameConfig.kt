@@ -10,11 +10,9 @@ package com.oadultradeepfield.wordlecli.model
  */
 data class GameConfig(val wordLength: Int, val maxAttempts: Int, val wordFilePath: String) {
     class Builder {
-        private var wordLength: Int = 5
-        private var maxAttempts: Int = 6
-
-        // This s
-        private var wordFilePath: String = "words.txt"
+        private var wordLength: Int = DEFAULT_WORD_LENGTH
+        private var maxAttempts: Int = DEFAULT_MAX_ATTEMPTS
+        private var wordFilePath: String = DEFAULT_WORD_FILE_PATH
 
         fun wordLength(value: Int) = apply { wordLength = value }
         fun maxAttempts(value: Int) = apply { maxAttempts = value }
@@ -24,6 +22,11 @@ data class GameConfig(val wordLength: Int, val maxAttempts: Int, val wordFilePat
     }
 
     companion object {
+        const val DEFAULT_WORD_LENGTH = 5
+        const val DEFAULT_MAX_ATTEMPTS = 6
+        const val DEFAULT_WORD_FILE_PATH = "words.txt"
+
         fun builder() = Builder()
+        fun withDefaults() = Builder()
     }
 }

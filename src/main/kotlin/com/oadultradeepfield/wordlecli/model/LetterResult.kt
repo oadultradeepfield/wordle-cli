@@ -8,5 +8,5 @@ package com.oadultradeepfield.wordlecli.model
 sealed class LetterResult(val emoji: String) {
     object Correct : LetterResult("\uD83D\uDFE9")
     object WrongPosition : LetterResult("\uD83D\uDFE8")
-    object Wrong : LetterResult("\uD83D\uDFE5")
+    object Wrong : LetterResult("⬛")
 }
