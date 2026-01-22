@@ -13,11 +13,13 @@ interface ReliableWordSource {
     fun getWords(): List<String>
 }
 
-internal class FileWordSource(private val filePath: String) : WordSource {
+internal class FileWordSource(private val resourceName: String) : WordSource {
     override fun loadWords(): Result<List<String>> {
-        return javaClass.getResourceAsStream(filePath)?.bufferedReader()?.readLines()
+        return this::class.java.classLoader.getResourceAsStream(resourceName)
+            ?.bufferedReader()
+            ?.readLines()
             ?.let { Result.Ok(it) }
-            ?: Result.Err("Could not load $filePath")
+            ?: Result.Err("Resource '$resourceName' not found in classpath")
     }
 }
 

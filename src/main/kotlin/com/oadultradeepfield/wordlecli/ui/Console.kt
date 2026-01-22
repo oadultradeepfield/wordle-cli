@@ -3,45 +3,38 @@ package com.oadultradeepfield.wordlecli.ui
 import com.oadultradeepfield.wordlecli.model.*
 
 /**
- * Console is a class that handles the user interface interactions for the Wordle game.
- * It provides methods to display banners, help texts, prompts, and guess results.
- *
- * @param config The configuration settings for the game.
+ * Console handles the user interface interactions for the Wordle game.
  */
 class Console(private val config: GameConfig) {
-    private val layout = ConsoleLayout()
+    private val banner = """
+                        U  ___ u   ____     ____     _     U _____ u 
+         __        __    \/"_ \/U |  _"\ u |  _"\   |"|    \| ___"|/ 
+         \"\      /"/    | | | | \| |_) |//| | | |U | | u   |  _|"   
+         /\ \ /\ / /\.-,_| |_| |  |  _ <  U| |_| |\\| |/__  | |___   
+        U  \ V  V /  U\_)-\___/   |_| \_\  |____/ u |_____| |_____|  
+        .-,_\ /\ /_,-.     \\     //   \\_  |||_    //  \\  <<   >>  
+         \_)-'  '-(_/     (__)   (__)  (__)(__)_)  (_")("_)(__) (__) 
+    """.trimIndent()
 
     private val helpText: String by lazy {
-        layout.apply {
+        ConsoleLayout().apply {
             box("HOW TO PLAY WORDLE") {
                 line("Guess the word in ${config.maxAttempts} tries.")
-                line("")
+                emptyLine()
                 line("${LetterResult.Correct.emoji} = Correct letter & position")
                 line("${LetterResult.WrongPosition.emoji} = Correct letter, wrong spot")
                 line("${LetterResult.Wrong.emoji} = Letter not in word")
-                line("")
+                emptyLine()
                 line("Commands: quit, help, stats, new")
             }
         }.render()
     }
 
-    private val banner: String by lazy {
-        layout.apply {
-            text(
-                """
-                U  ___ u   ____     ____     _     U _____ u 
- __        __    \/"_ \/U |  _"\ u |  _"\   |"|    \| ___"|/ 
- \"\      /"/    | | | | \| |_) |//| | | |U | | u   |  _|"   
- /\ \ /\ / /\.-,_| |_| |  |  _ <  U| |_| |\\| |/__  | |___   
-U  \ V  V /  U\_)-\___/   |_| \_\  |____/ u |_____| |_____|  
-.-,_\ /\ /_,-.     \\     //   \\_  |||_    //  \\  <<   >>  
- \_)-'  '-(_/     (__)   (__)  (__)(__)_)  (_")("_)(__) (__) 
-            """.trimIndent()
-            )
-        }.render()
+    fun showBanner() {
+        println()
+        println(banner)
+        println()
     }
-
-    fun showBanner() = println("\n$banner\n")
 
     fun showHelp() = println(helpText)
 
@@ -61,65 +54,60 @@ U  \ V  V /  U\_)-\___/   |_| \_\  |____/ u |_____| |_____|
     }
 
     fun showGuess(result: GuessResult) {
-        val guessDisplay = layout.apply {
+        println()
+        val box = ConsoleLayout().apply {
             box("") {
-                line(result.letters.joinToString("") { it.emoji })
+                guess(result)
             }
         }.render()
-
-        println("\n${result.display()}")
-        println(guessDisplay)
+        println(box)
     }
 
     fun showGuessHistory(history: List<GuessResult>) {
         if (history.isEmpty()) return
 
-        val historyBox = layout.apply {
+        val box = ConsoleLayout().apply {
             box("GUESS HISTORY") {
-                history.forEach { guess ->
-                    line(guess.letters.joinToString("") { it.emoji })
+                history.forEachIndexed { index, guess ->
+                    if (index > 0) emptyLine()
+                    guess(guess)
                 }
             }
         }.render()
-
-        println(historyBox)
+        println(box)
     }
 
     fun showGameEnd(state: GameState, history: List<GuessResult>) {
-        val endMessage = when (state) {
+        println()
+
+        when (state) {
             is GameState.Won -> {
-                "🎉 BRILLIANT! You got it in ${state.attempts} ${if (state.attempts == 1) "try" else "tries"}!"
+                val tries = if (state.attempts == 1) "try" else "tries"
+                println("🎉 BRILLIANT! You got it in ${state.attempts} $tries!")
             }
 
             is GameState.Lost -> {
-                "😔 Game Over! The word was: ${state.secretWord.uppercase()}"
+                println("😔 Game Over! The word was: ${state.secretWord.uppercase()}")
             }
 
-            /* shouldn't happen */
-            is GameState.Playing -> ""
+            is GameState.Playing -> return
         }
 
-        val gameEndLayout = layout.apply {
-            if (endMessage.isNotEmpty()) {
-                text(endMessage)
-            }
+        println()
+
+        val box = ConsoleLayout().apply {
             box("YOUR GAME") {
-                history.forEach { guess ->
-                    line(guess.letters.joinToString("") { it.emoji })
+                history.forEachIndexed { index, guess ->
+                    if (index > 0) emptyLine()
+                    guess(guess)
                 }
             }
         }.render()
-
-        println(gameEndLayout)
+        println(box)
     }
 
     fun showError(message: String) {
-        val errorBox = layout.apply {
-            box("ERROR") {
-                line(message)
-            }
-        }.render()
-
-        println(errorBox)
+        println()
+        println("⚠ ERROR: $message")
     }
 }

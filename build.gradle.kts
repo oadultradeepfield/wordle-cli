@@ -1,5 +1,7 @@
 plugins {
     kotlin("jvm") version "2.2.21"
+    application
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "com.oadultradeepfield.wordlecli"
@@ -15,6 +17,18 @@ dependencies {
 
 kotlin {
     jvmToolchain(11)
+}
+
+application {
+    mainClass.set("com.oadultradeepfield.wordlecli.MainKt")
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs("src/main/resources")
+        }
+    }
 }
 
 tasks.test {

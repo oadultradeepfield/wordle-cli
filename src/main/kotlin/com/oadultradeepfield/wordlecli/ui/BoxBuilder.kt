@@ -1,10 +1,9 @@
 package com.oadultradeepfield.wordlecli.ui
 
+import com.oadultradeepfield.wordlecli.model.GuessResult
+
 /**
  * BoxBuilder is a class that helps in creating a box layout for the Wordle game.
- * It provides methods to add lines of text to the box and build the final box string.
- *
- * @param title The title of the box.
  */
 class BoxBuilder(private val title: String) {
     private val lines = mutableListOf<String>()
@@ -13,8 +12,21 @@ class BoxBuilder(private val title: String) {
         lines.add(content)
     }
 
+    fun emptyLine() {
+        lines.add("")
+    }
+
+    fun guess(result: GuessResult) {
+        lines.add(result.displayWord())
+        lines.add(result.displayEmojis())
+    }
+
     fun build(): String {
-        val maxWidth = (lines.maxOfOrNull { it.length } ?: 0).coerceAtLeast(title.length) + 4
+        val maxWidth = maxOf(
+            lines.maxOfOrNull { it.length } ?: 0,
+            title.length,
+            20
+        )
         return ConsoleFormatter.createBox(title, lines, maxWidth)
     }
 }

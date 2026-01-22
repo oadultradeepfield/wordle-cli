@@ -9,11 +9,9 @@ package com.oadultradeepfield.wordlecli.model
 data class GuessResult(val word: String, val letters: List<LetterResult>) {
     val isWin: Boolean = letters.all { it is LetterResult.Correct }
 
-    // By using 'run' function, we can avoid the use of 'let' function and make the code more concise.
-    fun display(): String = run {
-        val colored = word.mapIndexed { index, ch ->
-            "$ch ${letters[index].emoji}"
-        }
-        colored.joinToString(" ")
-    }
+    fun displayWord(): String = word.uppercase().toList().joinToString(" ")
+
+    fun displayEmojis(): String = letters.joinToString(" ") { it.emoji }
+
+    fun displayLines(): Pair<String, String> = displayWord() to displayEmojis()
 }

@@ -4,17 +4,23 @@ package com.oadultradeepfield.wordlecli.ui
  * ConsoleFormatter provides utility functions for formatting console output.
  */
 object ConsoleFormatter {
-    fun createBox(title: String, content: List<String>, width: Int = 40): String {
-        val topBorder = "╔${"═".repeat(width - 2)}╗"
-        val bottomBorder = "╚${"═".repeat(width - 2)}╝"
-        val titleLine = "║ ${title.padEnd(width - 4)} ║"
-        val separator = "╠${"═".repeat(width - 2)}╣"
+    private const val DEFAULT_WIDTH = 32
+    private const val LINE_CHAR = "═"
 
-        val contentLines = content.map { line ->
-            "║ ${line.padEnd(width - 4)} ║"
+    fun createBox(title: String, content: List<String>, width: Int = DEFAULT_WIDTH): String {
+        val line = LINE_CHAR.repeat(width)
+
+        val result = StringBuilder()
+        result.appendLine(line)
+
+        if (title.isNotEmpty()) {
+            result.appendLine(title)
+            result.appendLine(line)
         }
 
-        return (listOf(topBorder, titleLine, separator) + contentLines + listOf(bottomBorder))
-            .joinToString("\n")
+        content.forEach { result.appendLine(it) }
+        result.append(line)
+
+        return result.toString()
     }
 }

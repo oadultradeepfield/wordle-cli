@@ -34,10 +34,12 @@ fun main() {
 
         game.onState<GameState.Won> { wonState ->
             ui.showGameEnd(wonState, game.history)
+            break@gameLoop
         }
 
         game.onState<GameState.Lost> { lostState ->
             ui.showGameEnd(lostState, game.history)
+            break@gameLoop
         }
 
         ui.showPrompt(game.remainingGuesses)

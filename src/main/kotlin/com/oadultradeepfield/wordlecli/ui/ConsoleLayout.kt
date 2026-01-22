@@ -1,21 +1,24 @@
 package com.oadultradeepfield.wordlecli.ui
 
 /**
- * ConsoleLayout is a class that helps in creating a console layout for the Wordle game.
- * It provides methods to add boxes and text components to the layout.
+ * ConsoleLayout is a builder class for creating formatted console output.
  */
 class ConsoleLayout {
-    private val components = mutableListOf<String>()
+    private val elements = mutableListOf<String>()
 
-    fun box(title: String, builder: BoxBuilder.() -> Unit) {
-        val boxBuilder = BoxBuilder(title)
-        boxBuilder.builder()
-        components.add(boxBuilder.build())
+    fun box(title: String, block: BoxBuilder.() -> Unit) {
+        val builder = BoxBuilder(title)
+        builder.block()
+        elements.add(builder.build())
     }
 
     fun text(content: String) {
-        components.add(content)
+        elements.add(content)
     }
 
-    fun render(): String = components.joinToString("\n\n")
+    fun render(): String {
+        val result = elements.joinToString("\n\n")
+        elements.clear()
+        return result
+    }
 }
