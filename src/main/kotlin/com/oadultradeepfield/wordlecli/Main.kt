@@ -1,5 +1,7 @@
 package com.oadultradeepfield.wordlecli
 
+import com.oadultradeepfield.wordlecli.logic.CachingWordSource
+import com.oadultradeepfield.wordlecli.logic.WordBank
 import com.oadultradeepfield.wordlecli.logic.WordleGame
 import com.oadultradeepfield.wordlecli.model.GameAction
 import com.oadultradeepfield.wordlecli.model.GameConfig
@@ -14,6 +16,11 @@ fun main() {
         .wordFile("words.txt")
         .build()
 
+    /**
+     * Warning: The word bank singleton object must be configured before the game starts.
+     */
+    WordBank.configure(config, CachingWordSource(config.wordFilePath))
+
     val game = WordleGame(config)
     val ui = Console(config)
 
@@ -25,13 +32,11 @@ fun main() {
     gameLoop@ while (true) {
         ui.showGuessHistory(game.history)
 
-        if (game.currentState is GameState.Won) {
-            val wonState = game.currentState as GameState.Won
+        game.onState<GameState.Won> { wonState ->
             ui.showGameEnd(wonState, game.history)
         }
 
-        if (game.currentState is GameState.Lost) {
-            val lostState = game.currentState as GameState.Lost
+        game.onState<GameState.Lost> { lostState ->
             ui.showGameEnd(lostState, game.history)
         }
 
